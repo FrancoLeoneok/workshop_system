@@ -11,13 +11,12 @@ class Dispositivo:
         return f"Dispositivo(tipo={self.tipo}, marca={self.marca}, modelo={self.modelo})"
 
 class Celular(Dispositivo):
-    def __init__(self, tipo: str, marca, modelo, sistema_operativo: str, camara_megapixeles: int):
+    def __init__(self, tipo: str, marca, modelo, sistema_operativo: str):
         super().__init__(tipo, marca, modelo)
         self.sistema_operativo = sistema_operativo
-        self.camara_megapixeles = camara_megapixeles
         
     def __str__(self):
-        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo}, camara_megapixeles={self.camara_megapixeles})"
+        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo})"
 
 class Computadora(Dispositivo):
     def __init__(self, tipo: str, marca, modelo, procesador, ram_gb):
