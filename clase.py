@@ -1,24 +1,25 @@
+from funtion import funtion
+import datetime
 class Dispositivo:
-    def __init__(self, tipo: str, marca: str, modelo: str):
+    def __init__(self, tipo: str, marca, modelo):
         self.tipo = tipo
         self.marca = marca
         self.modelo = modelo
-        self.historial_trabajos: list = [] 
-
+        
     def __str__(self):
         return f"Dispositivo(tipo={self.tipo}, marca={self.marca}, modelo={self.modelo})"
 
 class Celular(Dispositivo):
-    def __init__(self, tipo: str, marca: str, modelo: str, sistema_operativo: str, camara_megapixeles: int):
+    def __init__(self, tipo: str, marca, modelo, sistema_operativo: str):
         super().__init__(tipo, marca, modelo)
         self.sistema_operativo = sistema_operativo
-        self.camara_megapixeles = camara_megapixeles
+        
 
     def __str__(self):
-        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo}, camara_megapixeles={self.camara_megapixeles})"
+        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo})"
 
 class Computadora(Dispositivo):
-    def __init__(self, tipo: str, marca: str, modelo: str, procesador: str, ram_gb: int):
+    def __init__(self, tipo: str, marca, modelo, procesador, ram_gb):
         super().__init__(tipo, marca, modelo)
         self.procesador = procesador
         self.ram_gb = ram_gb
@@ -27,7 +28,7 @@ class Computadora(Dispositivo):
         return f"Computadora({super().__str__()}, procesador={self.procesador}, ram_gb={self.ram_gb})"
 
 class Persona:
-    def __init__(self, nombre: str, edad: int, fecha_nacimiento: str, sexo: str, numero_telefono: int, domicilio: str):
+    def __init__(self, nombre: str, edad: int, fecha_nacimiento, sexo: str, numero_telefono: int, domicilio: str):
         self.nombre = nombre
         self.edad = edad
         self.fecha_nacimiento = fecha_nacimiento
@@ -39,7 +40,7 @@ class Persona:
         return f"Persona(nombre={self.nombre}, edad={self.edad}, fecha_nacimiento={self.fecha_nacimiento}, sexo={self.sexo}, numero_telefono={self.numero_telefono}, domicilio={self.domicilio})"
 
 class Empleado(Persona):
-    def __init__(self, nombre: str, edad: int, fecha_nacimiento: str, sexo: str, numero_telefono: int, domicilio: str, puesto: str, salario: float):
+    def __init__(self, nombre: str, edad: int, fecha_nacimiento, sexo: str, numero_telefono: int, domicilio: str, puesto: str, salario: float):
         super().__init__(nombre, edad, fecha_nacimiento, sexo, numero_telefono, domicilio)
         self.puesto = puesto
         self.salario = salario
@@ -48,13 +49,12 @@ class Empleado(Persona):
         return f"Empleado({super().__str__()}, puesto={self.puesto}, salario={self.salario})"
     
 class Cliente(Persona):
-    def __init__(self, nombre: str, edad: int, fecha_nacimiento: str, sexo: str, numero_telefono: int, domicilio: str, numero_cliente: int = 0, historial_compras: list = None):
+    def __init__(self, nombre: str, edad: int, fecha_nacimiento, sexo: str, numero_telefono: int, domicilio: str, numero_cliente):
         super().__init__(nombre, edad, fecha_nacimiento, sexo, numero_telefono, domicilio)
         self.numero_cliente = numero_cliente
-        self.historial_compras = historial_compras if historial_compras is not None else []
         
     def __str__(self):
-        return f"Cliente({super().__str__()}, numero_cliente={self.numero_cliente}, historial_compras={self.historial_compras})"
+        return f"Cliente({super().__str__()}, numero_cliente={self.numero_cliente})"
 
 class Trabajo:
     def __init__(self, id_trabajo: int, dispositivo: Dispositivo, cliente: Cliente, empleado: Empleado, descripcion: str, costo_estimado: float):
@@ -64,10 +64,10 @@ class Trabajo:
         self.empleado = empleado
         self.descripcion = descripcion
         self.costo_estimado = costo_estimado
-        self.costo_real = 0.0  # Se actualiza al finalizar
-        self.fecha_inicio = None  # datetime
-        self.fecha_fin = None  # datetime
-        self.estado = "pendiente"  # Estados: pendiente, en_progreso, completado
+        self.costo_real = 0.0
+        self.fecha_inicio = None  #datetime
+        self.fecha_fin = None     # II
+        self.estado = "pendiente"   
 
     def iniciar_trabajo(self):
         if self.estado == "pendiente":
@@ -82,7 +82,7 @@ class Trabajo:
             self.fecha_fin = datetime.now()
             self.costo_real = costo_real
             self.estado = "completado"
-            self.dispositivo.historial_trabajos.append(self)  # Agregar al historial del dispositivo
+            self.dispositivo.historial_trabajos.append(self)  
             print(f"Trabajo {self.id_trabajo} completado.")
         else:
             print("El trabajo no está en progreso.")
@@ -95,8 +95,8 @@ class Negocio:
         self.inventario = inventario
         self.personal = personal
         self.clientela = clientela
-        self.trabajos: list[Trabajo] = []  # Lista de trabajos de reparación
-        self.contador_trabajos = 0  # Para generar IDs únicos
+        self.trabajos: list[Trabajo] = []  
+        self.contador_trabajos = 0  
     
     def agregar_compu(self):
         opciones_procesador = ["intel", "amd"]
@@ -137,7 +137,6 @@ class Negocio:
         print("Celular agregado al inventario.")
 
     def crear_trabajo(self):
-        # Seleccionar dispositivo del inventario
         if not self.inventario:
             print("No hay dispositivos en el inventario.")
             return
@@ -145,13 +144,12 @@ class Negocio:
         for i, disp in enumerate(self.inventario):
             print(f"{i+1}. {disp}")
         try:
-            idx_disp = int(input("Seleccione el número del dispositivo: ")) - 1
-            dispositivo = self.inventario[idx_disp]
+            id_disp = int(input("Seleccione el número del dispositivo: ")) - 1
+            dispositivo = self.inventario[id_disp]
         except (ValueError, IndexError):
             print("Selección inválida.")
             return
-        
-        # Seleccionar cliente
+
         if not self.clientela:
             print("No hay clientes registrados.")
             return
@@ -159,13 +157,12 @@ class Negocio:
         for i, cli in enumerate(self.clientela):
             print(f"{i+1}. {cli.nombre}")
         try:
-            idx_cli = int(input("Seleccione el número del cliente: ")) - 1
-            cliente = self.clientela[idx_cli]
+            id_cli = int(input("Seleccione el número del cliente: ")) - 1
+            cliente = self.clientela[id_cli]
         except (ValueError, IndexError):
             print("Selección inválida.")
             return
-        
-        # Seleccionar empleado
+
         if not self.personal:
             print("No hay empleados registrados.")
             return
@@ -173,8 +170,8 @@ class Negocio:
         for i, emp in enumerate(self.personal):
             print(f"{i+1}. {emp.nombre}")
         try:
-            idx_emp = int(input("Seleccione el número del empleado: ")) - 1
-            empleado = self.personal[idx_emp]
+            id_emp = int(input("Seleccione el número del empleado: ")) - 1
+            empleado = self.personal[id_emp]
         except (ValueError, IndexError):
             print("Selección inválida.")
             return
@@ -201,8 +198,8 @@ class Negocio:
         for i, trab in enumerate(self.trabajos):
             print(f"{i+1}. {trab}")
         try:
-            idx = int(input("Seleccione el número del trabajo: ")) - 1
-            trabajo = self.trabajos[idx]
+            id = int(input("Seleccione el número del trabajo: ")) - 1
+            trabajo = self.trabajos[id]
         except (ValueError, IndexError):
             print("Selección inválida.")
             return
@@ -219,8 +216,7 @@ class Negocio:
                 return
         else:
             print("Acción inválida.")
-        
-        # Actualizar archivo
+  
         with open("programa/trabajos.txt", "w", encoding="utf-8") as file:
             for trab in self.trabajos:
                 file.write(f"{trab}\n")
@@ -234,8 +230,8 @@ class Negocio:
             print(trab)
 
 
-if __name__ == "__main__":    # Ejemplo de uso
+if __name__ == "__main__":   
     negocio = Negocio(inventario=[], personal=[], clientela=[])
-    # Aquí podrías agregar llamadas a los métodos para probar la funcionalidad
+  
 
 
