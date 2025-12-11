@@ -1,5 +1,6 @@
-from funtion import funtion
+from function import function as fn  
 import datetime
+
 class Dispositivo:
     def __init__(self, tipo: str, marca, modelo):
         self.tipo = tipo
@@ -10,13 +11,13 @@ class Dispositivo:
         return f"Dispositivo(tipo={self.tipo}, marca={self.marca}, modelo={self.modelo})"
 
 class Celular(Dispositivo):
-    def __init__(self, tipo: str, marca, modelo, sistema_operativo: str):
+    def __init__(self, tipo: str, marca, modelo, sistema_operativo: str, camara_megapixeles: int):
         super().__init__(tipo, marca, modelo)
         self.sistema_operativo = sistema_operativo
+        self.camara_megapixeles = camara_megapixeles
         
-
     def __str__(self):
-        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo})"
+        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo}, camara_megapixeles={self.camara_megapixeles})"
 
 class Computadora(Dispositivo):
     def __init__(self, tipo: str, marca, modelo, procesador, ram_gb):
@@ -65,13 +66,13 @@ class Trabajo:
         self.descripcion = descripcion
         self.costo_estimado = costo_estimado
         self.costo_real = 0.0
-        self.fecha_inicio = None  #datetime
-        self.fecha_fin = None     # II
+        self.fecha_inicio = None  # datetime
+        self.fecha_fin = None     # datetime
         self.estado = "pendiente"   
 
     def iniciar_trabajo(self):
         if self.estado == "pendiente":
-            self.fecha_inicio = datetime.now()
+            self.fecha_inicio = datetime.datetime.now()
             self.estado = "en_progreso"
             print(f"Trabajo {self.id_trabajo} iniciado.")
         else:
@@ -79,10 +80,9 @@ class Trabajo:
 
     def finalizar_trabajo(self, costo_real: float):
         if self.estado == "en_progreso":
-            self.fecha_fin = datetime.now()
+            self.fecha_fin = datetime.datetime.now()
             self.costo_real = costo_real
             self.estado = "completado"
-            self.dispositivo.historial_trabajos.append(self)  
             print(f"Trabajo {self.id_trabajo} completado.")
         else:
             print("El trabajo no está en progreso.")
@@ -229,9 +229,9 @@ class Negocio:
         for trab in self.trabajos:
             print(trab)
 
-
 if __name__ == "__main__":   
     negocio = Negocio(inventario=[], personal=[], clientela=[])
+
   
 
 
