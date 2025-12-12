@@ -1,4 +1,4 @@
-from function import function as fn  
+import funtion as fn
 import datetime
 
 class Dispositivo:
