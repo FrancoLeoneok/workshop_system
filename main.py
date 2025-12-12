@@ -1,4 +1,4 @@
-from clase import Negocio, Cliente, Empleado, Computadora, Celular
+from clase import Negocio, Dispositivo, Computadora, Celular, Cliente, Empleado
 import datetime
 
 def mostrar_menu():
