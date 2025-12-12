@@ -7,22 +7,52 @@ class Dispositivo:
         self.marca = marca
         self.modelo = modelo
         
+    def to_string(self):
+        return f"Dispositivo|{self.tipo}|{self.marca}|{self.modelo}"
+    
+    @classmethod
+    def from_string(cls, s):
+        parts = s.split("|")
+        if parts[0] == "Dispositivo":
+            return cls(parts[1], parts[2], parts[3])
+        elif parts[0] == "Celular":
+            return Celular.from_string(s)
+        elif parts[0] == "Computadora":
+            return Computadora.from_string(s)
+    
     def __str__(self):
         return f"Dispositivo(tipo={self.tipo}, marca={self.marca}, modelo={self.modelo})"
 
 class Celular(Dispositivo):
-    def __init__(self, tipo: str, marca, modelo, sistema_operativo: str):
+    def __init__(self, tipo: str, marca, modelo, sistema_operativo: str, camara_megapixeles: int):
         super().__init__(tipo, marca, modelo)
         self.sistema_operativo = sistema_operativo
+        self.camara_megapixeles = camara_megapixeles
+        
+    def to_string(self):
+        return f"Celular|{self.tipo}|{self.marca}|{self.modelo}|{self.sistema_operativo}|{self.camara_megapixeles}"
+    
+    @classmethod
+    def from_string(cls, s):
+        parts = s.split("|")
+        return cls(parts[1], parts[2], parts[3], parts[4], int(parts[5]))
         
     def __str__(self):
-        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo})"
+        return f"Celular({super().__str__()}, sistema_operativo={self.sistema_operativo}, camara_megapixeles={self.camara_megapixeles})"
 
 class Computadora(Dispositivo):
     def __init__(self, tipo: str, marca, modelo, procesador, ram_gb):
         super().__init__(tipo, marca, modelo)
         self.procesador = procesador
         self.ram_gb = ram_gb
+
+    def to_string(self):
+        return f"Computadora|{self.tipo}|{self.marca}|{self.modelo}|{self.procesador}|{self.ram_gb}"
+    
+    @classmethod
+    def from_string(cls, s):
+        parts = s.split("|")
+        return cls(parts[1], parts[2], parts[3], parts[4], int(parts[5]))
 
     def __str__(self):
         return f"Computadora({super().__str__()}, procesador={self.procesador}, ram_gb={self.ram_gb})"
@@ -36,6 +66,19 @@ class Persona:
         self.numero_telefono = numero_telefono
         self.domicilio = domicilio
     
+    def to_string(self):
+        return f"Persona|{self.nombre}|{self.edad}|{str(self.fecha_nacimiento)}|{self.sexo}|{self.numero_telefono}|{self.domicilio}"
+    
+    @classmethod
+    def from_string(cls, s):
+        parts = s.split("|")
+        if parts[0] == "Persona":
+            return cls(parts[1], int(parts[2]), datetime.datetime.fromisoformat(parts[3]).date(), parts[4], int(parts[5]), parts[6])
+        elif parts[0] == "Empleado":
+            return Empleado.from_string(s)
+        elif parts[0] == "Cliente":
+            return Cliente.from_string(s)
+    
     def __str__(self):
         return f"Persona(nombre={self.nombre}, edad={self.edad}, fecha_nacimiento={self.fecha_nacimiento}, sexo={self.sexo}, numero_telefono={self.numero_telefono}, domicilio={self.domicilio})"
 
@@ -45,6 +88,14 @@ class Empleado(Persona):
         self.puesto = puesto
         self.salario = salario
 
+    def to_string(self):
+        return f"Empleado|{self.nombre}|{self.edad}|{str(self.fecha_nacimiento)}|{self.sexo}|{self.numero_telefono}|{self.domicilio}|{self.puesto}|{self.salario}"
+    
+    @classmethod
+    def from_string(cls, s):
+        parts = s.split("|")
+        return cls(parts[1], int(parts[2]), datetime.datetime.fromisoformat(parts[3]).date(), parts[4], int(parts[5]), parts[6], parts[7], float(parts[8]))
+
     def __str__(self):
         return f"Empleado({super().__str__()}, puesto={self.puesto}, salario={self.salario})"
     
@@ -52,6 +103,14 @@ class Cliente(Persona):
     def __init__(self, nombre: str, edad: int, fecha_nacimiento, sexo: str, numero_telefono: int, domicilio: str, numero_cliente):
         super().__init__(nombre, edad, fecha_nacimiento, sexo, numero_telefono, domicilio)
         self.numero_cliente = numero_cliente
+        
+    def to_string(self):
+        return f"Cliente|{self.nombre}|{self.edad}|{str(self.fecha_nacimiento)}|{self.sexo}|{self.numero_telefono}|{self.domicilio}|{self.numero_cliente}"
+    
+    @classmethod
+    def from_string(cls, s):
+        parts = s.split("|")
+        return cls(parts[1], int(parts[2]), datetime.datetime.fromisoformat(parts[3]).date(), parts[4], int(parts[5]), parts[6], parts[7])
         
     def __str__(self):
         return f"Cliente({super().__str__()}, numero_cliente={self.numero_cliente})"
@@ -68,6 +127,24 @@ class Trabajo:
         self.fecha_inicio = None  # datetime
         self.fecha_fin = None     # datetime
         self.estado = "pendiente"   
+
+    def to_string(self):
+        fecha_inicio_str = str(self.fecha_inicio) if self.fecha_inicio else "None"
+        fecha_fin_str = str(self.fecha_fin) if self.fecha_fin else "None"
+        return f"Trabajo|{self.id_trabajo}|{self.dispositivo.to_string()}|{self.cliente.to_string()}|{self.empleado.to_string()}|{self.descripcion}|{self.costo_estimado}|{self.costo_real}|{fecha_inicio_str}|{fecha_fin_str}|{self.estado}"
+    
+    @classmethod
+    def from_string(cls, s):
+        parts = s.split("|")
+        dispositivo = Dispositivo.from_string("|".join(parts[2:7]))  # Ajustar según formato
+        cliente = Persona.from_string("|".join(parts[7:15]))  # Ajustar
+        empleado = Persona.from_string("|".join(parts[15:24]))  # Ajustar
+        trabajo = cls(int(parts[1]), dispositivo, cliente, empleado, parts[24], float(parts[25]))
+        trabajo.costo_real = float(parts[26])
+        trabajo.fecha_inicio = datetime.datetime.fromisoformat(parts[27]) if parts[27] != "None" else None
+        trabajo.fecha_fin = datetime.datetime.fromisoformat(parts[28]) if parts[28] != "None" else None
+        trabajo.estado = parts[29]
+        return trabajo
 
     def iniciar_trabajo(self):
         if self.estado == "pendiente":
@@ -96,7 +173,69 @@ class Negocio:
         self.clientela = clientela
         self.trabajos: list[Trabajo] = []  
         self.contador_trabajos = 0  
+        self.cargar_datos()
     
+    def cargar_datos(self):
+        # Cargar inventario
+        try:
+            with open("programa/inventario.txt", "r", encoding="utf-8") as file:
+                for line in file:
+                    if line.strip():
+                        dispositivo = Dispositivo.from_string(line.strip())
+                        self.inventario.append(dispositivo)
+        except FileNotFoundError:
+            pass
+
+        try:
+            with open("programa/personal.txt", "r", encoding="utf-8") as file:
+                for line in file:
+                    if line.strip():
+                        empleado = Persona.from_string(line.strip())
+                        self.personal.append(empleado)
+        except FileNotFoundError:
+            pass
+  
+        try:
+            with open("programa/clientela.txt", "r", encoding="utf-8") as file:
+                for line in file:
+                    if line.strip():
+                        cliente = Persona.from_string(line.strip())
+                        self.clientela.append(cliente)
+        except FileNotFoundError:
+            pass
+        
+        # Cargar trabajos
+        try:
+            with open("programa/trabajos.txt", "r", encoding="utf-8") as file:
+                for line in file:
+                    if line.strip():
+                        trabajo = Trabajo.from_string(line.strip())
+                        self.trabajos.append(trabajo)
+                        if trabajo.id_trabajo > self.contador_trabajos:
+                            self.contador_trabajos = trabajo.id_trabajo
+        except FileNotFoundError:
+            pass
+    
+    def guardar_inventario(self):
+        with open("programa/inventario.txt", "w", encoding="utf-8") as file:
+            for disp in self.inventario:
+                file.write(disp.to_string() + "\n")
+    
+    def guardar_personal(self):
+        with open("programa/personal.txt", "w", encoding="utf-8") as file:
+            for emp in self.personal:
+                file.write(emp.to_string() + "\n")
+    
+    def guardar_clientela(self):
+        with open("programa/clientela.txt", "w", encoding="utf-8") as file:
+            for cli in self.clientela:
+                file.write(cli.to_string() + "\n")
+    
+    def guardar_trabajos(self):
+        with open("programa/trabajos.txt", "w", encoding="utf-8") as file:
+            for trab in self.trabajos:
+                file.write(trab.to_string() + "\n")
+
     def agregar_compu(self):
         opciones_procesador = ["intel", "amd"]
         
@@ -112,8 +251,7 @@ class Negocio:
         
         computadora = Computadora(tipo=tipo, marca=marca, modelo=modelo, procesador=procesador, ram_gb=ram_gb)
         self.inventario.append(computadora)
-        with open("programa/inventario.txt", "a", encoding="utf-8") as file:
-            file.write(f"{computadora}\n")
+        self.guardar_inventario()
         print("Computadora agregada al inventario.")
 
     def agregar_celu(self):
@@ -131,8 +269,7 @@ class Negocio:
         
         celular = Celular(tipo=tipo, marca=marca, modelo=modelo, sistema_operativo=sistema_operativo, camara_megapixeles=camara_megapixeles)
         self.inventario.append(celular)
-        with open("programa/inventario.txt", "a", encoding="utf-8") as file:
-            file.write(f"{celular}\n")
+        self.guardar_inventario()
         print("Celular agregado al inventario.")
 
     def crear_trabajo(self):
@@ -185,8 +322,7 @@ class Negocio:
         self.contador_trabajos += 1
         trabajo = Trabajo(self.contador_trabajos, dispositivo, cliente, empleado, descripcion, costo_estimado)
         self.trabajos.append(trabajo)
-        with open("programa/trabajos.txt", "a", encoding="utf-8") as file:
-            file.write(f"{trabajo}\n")
+        self.guardar_trabajos()
         print(f"Trabajo {trabajo.id_trabajo} creado.")
 
     def actualizar_estado_trabajo(self):
@@ -215,10 +351,8 @@ class Negocio:
                 return
         else:
             print("Acción inválida.")
-  
-        with open("programa/trabajos.txt", "w", encoding="utf-8") as file:
-            for trab in self.trabajos:
-                file.write(f"{trab}\n")
+        
+        self.guardar_trabajos()
 
     def listar_trabajos(self):
         if not self.trabajos:
@@ -230,6 +364,7 @@ class Negocio:
 
 if __name__ == "__main__":   
     negocio = Negocio(inventario=[], personal=[], clientela=[])
+
 
   
 
