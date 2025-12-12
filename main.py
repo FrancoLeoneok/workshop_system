@@ -1,4 +1,4 @@
-from clase import Negocio, Cliente, Empleado
+from clase import Negocio, Cliente, Empleado, Computadora, Celular
 import datetime
 
 def mostrar_menu():
@@ -6,11 +6,13 @@ def mostrar_menu():
     print("="*30)
     print("1. Agregar Cliente")
     print("2. Agregar Empleado")
-    print("3. Agregar Tarea")
-    print("4. Ver Tareas")
-    print("5. Ver lista de Cliente ")
-    print("6. Ver lista de Empleados ")
-    print("7. Modificar Trabajo")
+    print("3. Agregar Computadora")
+    print("4. Agregar Celular")
+    print("5. Crear Trabajo")
+    print("6. Ver Trabajos")
+    print("7. Ver lista de Clientes")
+    print("8. Ver lista de Empleados")
+    print("9. Modificar Trabajo")
     print("0. Salir")
     print("="*30)
 
@@ -46,9 +48,10 @@ def main():
             numero_cliente = len(negocio.clientela) + 1  # Asignar un número único
             cliente = Cliente(nombre, edad, fecha_nacimiento, sexo, numero_telefono, domicilio, numero_cliente)
             negocio.clientela.append(cliente)
+            negocio.guardar_clientela()  # Guardar automáticamente
             print("Cliente agregado.")
             
-        elif opcion == "2"
+        elif opcion == "2":
             nombre = input("Ingrese nombre del empleado: ")
             try:
                 edad = int(input("Ingrese edad: "))
@@ -79,15 +82,22 @@ def main():
                 continue
             empleado = Empleado(nombre, edad, fecha_nacimiento, sexo, numero_telefono, domicilio, puesto, salario)
             negocio.personal.append(empleado)
+            negocio.guardar_personal()  # Guardar automáticamente
             print("Empleado agregado.")
             
         elif opcion == "3":
-            negocio.crear_trabajo()
+            negocio.agregar_compu()
             
         elif opcion == "4":
-            negocio.listar_trabajos()
+            negocio.agregar_celu()
             
         elif opcion == "5":
+            negocio.crear_trabajo()
+            
+        elif opcion == "6":
+            negocio.listar_trabajos()
+            
+        elif opcion == "7":
             if not negocio.clientela:
                 print("No hay clientes registrados.")
             else:
@@ -95,7 +105,7 @@ def main():
                 for cliente in negocio.clientela:
                     print(cliente)
                     
-        elif opcion == "6":
+        elif opcion == "8":
             if not negocio.personal:
                 print("No hay empleados registrados.")
             else:
@@ -103,7 +113,7 @@ def main():
                 for empleado in negocio.personal:
                     print(empleado)
                     
-        elif opcion == "7":
+        elif opcion == "9":
             negocio.actualizar_estado_trabajo()
             
         elif opcion == "0":
@@ -115,4 +125,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
