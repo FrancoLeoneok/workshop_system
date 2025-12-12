@@ -45,10 +45,10 @@ def main():
                 print("Error: Número de teléfono debe ser un número entero.")
                 continue
             domicilio = input("Ingrese domicilio: ")
-            numero_cliente = len(negocio.clientela) + 1  # Asignar un número único
+            numero_cliente = len(negocio.clientela) + 1  
             cliente = Cliente(nombre, edad, fecha_nacimiento, sexo, numero_telefono, domicilio, numero_cliente)
             negocio.clientela.append(cliente)
-            negocio.guardar_clientela()  # Guardar automáticamente
+            negocio.guardar_clientela()  
             print("Cliente agregado.")
             
         elif opcion == "2":
@@ -82,7 +82,7 @@ def main():
                 continue
             empleado = Empleado(nombre, edad, fecha_nacimiento, sexo, numero_telefono, domicilio, puesto, salario)
             negocio.personal.append(empleado)
-            negocio.guardar_personal()  # Guardar automáticamente
+            negocio.guardar_personal()  
             print("Empleado agregado.")
             
         elif opcion == "3":
